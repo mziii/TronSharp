@@ -4,7 +4,24 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>TronSharp</Title>
+    <Authors>mziii</Authors>
+    <Description>TronSharp is a library to interact with tron network in dot net projects. I've recreated this project based on TronNet library from stoway Check here: https://github.com/stoway/TronNet</Description>
+    <PackageProjectUrl>https://github.com/mziii/TronSharp</PackageProjectUrl>
+    <PackageIcon>tronsharp.png</PackageIcon>
+    <RepositoryUrl>https://github.com/mziii/TronSharp</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>TronSharp;Tron network dot net;Tron network c#;Tron csharp;</PackageTags>
+    <PackageOutputPath>c:\TronSharpNuget\</PackageOutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\ansar\OneDrive\Pictures\tronsharp.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="HDWallet.Tron" Version="0.7.0" />
