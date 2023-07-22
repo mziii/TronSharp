@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33801.468
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TronSharp.Protocol", "TronSharp.Protocol\TronSharp.Protocol.csproj", "{F7B44ABC-7064-4F41-8D16-4CD4ACED883A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TronSharp.Crypto", "TronSharp.Crypto\TronSharp.Crypto.csproj", "{47019CD4-0667-42A6-8BBB-8F2E73905C04}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TronSharp", "TronSharp\TronSharp.csproj", "{47AC192D-37CC-4350-9095-956D608ABF10}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TronSharp.ABI", "TronSharp.ABI\TronSharp.ABI.csproj", "{4EBEE6E7-55C1-434F-B00F-FEE95BB1BC06}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F7B44ABC-7064-4F41-8D16-4CD4ACED883A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7B44ABC-7064-4F41-8D16-4CD4ACED883A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7B44ABC-7064-4F41-8D16-4CD4ACED883A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7B44ABC-7064-4F41-8D16-4CD4ACED883A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47019CD4-0667-42A6-8BBB-8F2E73905C04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47019CD4-0667-42A6-8BBB-8F2E73905C04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47019CD4-0667-42A6-8BBB-8F2E73905C04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47019CD4-0667-42A6-8BBB-8F2E73905C04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47AC192D-37CC-4350-9095-956D608ABF10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47AC192D-37CC-4350-9095-956D608ABF10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47AC192D-37CC-4350-9095-956D608ABF10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47AC192D-37CC-4350-9095-956D608ABF10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EBEE6E7-55C1-434F-B00F-FEE95BB1BC06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EBEE6E7-55C1-434F-B00F-FEE95BB1BC06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EBEE6E7-55C1-434F-B00F-FEE95BB1BC06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EBEE6E7-55C1-434F-B00F-FEE95BB1BC06}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6E28F7C3-AA86-40CC-8748-3A9467D54E6E}
+	EndGlobalSection
+EndGlobal

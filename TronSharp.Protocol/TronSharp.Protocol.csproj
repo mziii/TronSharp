@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Google.Api.CommonProtos" Version="2.10.0" />
+		<PackageReference Include="Google.Protobuf" Version="3.23.4" />
+		<PackageReference Include="Google.Protobuf.Tools" Version="3.23.4" />
+		<PackageReference Include="Grpc" Version="2.46.6" />
+		<PackageReference Include="Grpc.Net.ClientFactory" Version="2.55.0" />
+		<PackageReference Include="Grpc.Tools" Version="2.56.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="NBitcoin.Secp256k1">
+			<Version>3.1.1</Version>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="Protos\*.proto" />
+		<None Remove="Protos\api\*.proto" />
+		<None Remove="Protos\core\*.proto" />
+		<None Remove="Protos\core\contract\*.proto" />
+		<None Remove="Protos\core\tron\*.proto" />
+		<None Remove="Protos\google\api\*.proto" />
+		<None Remove="Protos\google\protobuf\*.proto" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Protobuf Include="Protos\*.proto" GrpcServices="Server" />
+		<Protobuf Include="Protos\api\*.proto" GrpcServices="Client" />
+		<Protobuf Include="Protos\core\*.proto" GrpcServices="Client" />
+		<Protobuf Include="Protos\core\contract\*.proto" GrpcServices="Client" />
+		<Protobuf Include="Protos\core\tron\*.proto" GrpcServices="Client" />
+		<Protobuf Include="Protos\google\api\*.proto" GrpcServices="Client" />
+		<Protobuf Include="Protos\google\protobuf\*.proto" GrpcServices="Client" />
+	</ItemGroup>
+</Project>
