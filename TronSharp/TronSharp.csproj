@@ -14,9 +14,19 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>TronSharp;Tron network dot net;Tron network c#;Tron csharp;</PackageTags>
     <PackageOutputPath>c:\TronSharpNuget\</PackageOutputPath>
+    <PackageLicenseFile>LICENSE.TXT</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="C:\Users\ansar\Downloads\LICENSE.TXT">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="C:\Users\ansar\Downloads\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Include="C:\Users\ansar\OneDrive\Pictures\tronsharp.png">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
