@@ -1,37 +1,38 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Title>TronSharp</Title>
-    <Authors>mziii</Authors>
-    <Description>TronSharp is a library to interact with tron network in dot net projects. I've recreated this project based on TronNet library from stoway Check here: https://github.com/stoway/TronNet</Description>
-    <PackageProjectUrl>https://github.com/mziii/TronSharp</PackageProjectUrl>
-    <PackageIcon>tronsharp.png</PackageIcon>
-    <RepositoryUrl>https://github.com/mziii/TronSharp</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageTags>TronSharp;Tron network dot net;Tron network c#;Tron csharp;</PackageTags>
-    <PackageOutputPath>c:\TronSharpNuget\</PackageOutputPath>
-    <PackageLicenseFile>LICENSE.TXT</PackageLicenseFile>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<Title>TronSharp</Title>
+		<Authors>mziii</Authors>
+		<Description>TronSharp is a library to interact with tron network in dot net projects. I've recreated this project based on TronNet library from stoway Check here: https://github.com/stoway/TronNet</Description>
+		<PackageProjectUrl>https://github.com/mziii/TronSharp</PackageProjectUrl>
+		<PackageIcon>tronsharp.png</PackageIcon>
+		<RepositoryUrl>https://github.com/mziii/TronSharp</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageTags>TronSharp;Tron network dot net;Tron network c#;Tron csharp;</PackageTags>
+		<PackageOutputPath>c:\TronSharpNuget\</PackageOutputPath>
+		<PackageLicenseFile>LICENSE.TXT</PackageLicenseFile>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<VersionPrefix>1.0.1</VersionPrefix>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Include="C:\Users\ansar\Downloads\LICENSE.TXT">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="C:\Users\ansar\Downloads\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="C:\Users\ansar\OneDrive\Pictures\tronsharp.png">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Include="C:\Users\ansar\Downloads\LICENSE.TXT">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="C:\Users\ansar\Downloads\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="C:\Users\ansar\OneDrive\Pictures\tronsharp.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="HDWallet.Tron" Version="0.7.0" />
@@ -39,8 +40,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\TronSharp.ABI\TronSharp.ABI.csproj" />
-	  <ProjectReference Include="..\TronSharp.Protocol\TronSharp.Protocol.csproj" />
+		<ProjectReference Include="..\TronSharp.ABI\TronSharp.ABI.csproj" />
+		<ProjectReference Include="..\TronSharp.Protocol\TronSharp.Protocol.csproj" />
 	</ItemGroup>
-	
+
 </Project>

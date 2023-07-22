@@ -16,6 +16,7 @@
 		<PackageOutputPath>c:\TronSharpNuget\</PackageOutputPath>
 		<PackageLicenseFile>LICENSE.TXT</PackageLicenseFile>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<VersionPrefix>1.0.1</VersionPrefix>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -1,4 +1,4 @@
-﻿namespace TronSharp.Contracts
+﻿namespace TronSharp.Contract
 {
     public enum ContractProtocol
     {

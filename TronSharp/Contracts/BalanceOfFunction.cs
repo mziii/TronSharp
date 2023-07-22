@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using TronSharp.ABI.FunctionEncoding.Attributes;
 
-namespace TronSharp.Contracts
+namespace TronSharp.Contract
 {
     [Function("balanceOf", "uint256")]
     public class BalanceOfFunction : FunctionMessage

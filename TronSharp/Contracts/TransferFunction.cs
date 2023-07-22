@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TronSharp.ABI.FunctionEncoding.Attributes;
 
-namespace TronSharp.Contracts
+namespace TronSharp.Contract
 {
     [Function("transfer", "bool")]
     public class TransferFunction : FunctionMessage

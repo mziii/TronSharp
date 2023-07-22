@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using TronSharp.Contract;
 
 namespace TronSharp
 {
@@ -14,8 +15,8 @@ namespace TronSharp
             services.AddTransient<IGrpcChannelClient, GrpcChannelClient>();
             services.AddTransient<ITronClient, TronClient>();
             services.AddTransient<IWalletClient, WalletClient>();
-            services.AddSingleton<Contracts.IContractClientFactory, Contracts.ContractClientFactory>();
-            services.AddTransient<Contracts.TRC20ContractClient>();
+            services.AddSingleton<IContractClientFactory, ContractClientFactory>();
+            services.AddTransient<TRC20ContractClient>();
             services.Configure(setupAction);
 
             return services;

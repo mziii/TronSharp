@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace TronSharp.Contracts
+namespace TronSharp.Contract
 {
     public class GetContractEventsResult
     {

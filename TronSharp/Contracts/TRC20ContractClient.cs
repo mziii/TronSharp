@@ -9,7 +9,7 @@ using TronSharp.Contract;
 using TronSharp.Crypto;
 using TronSharp.Protocol;
 
-namespace TronSharp.Contracts
+namespace TronSharp.Contract
 {
     class TRC20ContractClient : IContractClient
     {

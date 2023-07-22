@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 using TronSharp.ABI.FunctionEncoding.Attributes;
-using TronSharp.Contracts;
+using TronSharp.Contract;
 
 namespace TronSharp.Dex.Sunio.V1.Functions
 {

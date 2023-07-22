@@ -1,7 +1,7 @@
 ﻿using TronSharp.Accounts;
 using TronSharp.Protocol;
 
-namespace TronSharp.Contracts
+namespace TronSharp.Contract
 {
     public interface IContractClient
     {
