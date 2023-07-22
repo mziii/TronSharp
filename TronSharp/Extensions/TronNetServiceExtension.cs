@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Nethereum.RPC.NonceServices;
+using Newtonsoft.Json;
 using TronSharp.Contract;
+using TronSharp.Dex.Sunio;
 
 namespace TronSharp
 {
@@ -17,6 +20,23 @@ namespace TronSharp
             services.AddTransient<IWalletClient, WalletClient>();
             services.AddSingleton<IContractClientFactory, ContractClientFactory>();
             services.AddTransient<TRC20ContractClient>();
+
+            #region Binance
+            services.AddSingleton<ISunioService, SunioService>();
+
+            services.AddHttpClient<SunioClient>("BinanceClient", x =>
+            {
+                x.Timeout = TimeSpan.FromSeconds(15);
+            });
+
+            services.AddSingleton<ISunioClientFactory, SunioClientFactory>();
+            #endregion
+
+            services.AddSingleton(new JsonSerializer()
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            });
+
             services.Configure(setupAction);
 
             return services;

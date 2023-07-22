@@ -5,7 +5,6 @@ using TronSharp.ABI;
 using TronSharp.ABI.FunctionEncoding;
 using TronSharp.ABI.Model;
 using TronSharp.Accounts;
-using TronSharp.Contract;
 using TronSharp.Crypto;
 using TronSharp.Protocol;
 

@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TronSharp.Contract;
+﻿using TronSharp.Contract;
+using TronSharp.Dex.Sunio;
 
 namespace TronSharp
 {
     public interface ITronClient
     {
-        TronNetwork TronSharpwork { get; }
+        TronNetwork TronNetwork { get; }
         IGrpcChannelClient GetChannel();
         IWalletClient GetWallet();
         ITransactionClient GetTransaction();
-        IContractClient GetContract();
+        IContractClient GetTRC20Contract();
+        ISunioService GetSunioDex();
     }
 }
