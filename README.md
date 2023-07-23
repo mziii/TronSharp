@@ -22,7 +22,7 @@ dotnet add package TronSharp
 ```
 
 ### Configuration
-First,You need to config `TronSharp` in your `Startup.cs`:
+First, you need to config `TronSharp` in your `Startup.cs` You can specify your TronGrid API key, but it works without an API key too with less accuracy:
 ```c#
 ......
 using TronSharp;
