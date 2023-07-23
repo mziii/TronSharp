@@ -46,7 +46,7 @@ public void ConfigureServices(IServiceCollection services)
 
 ```
 
-Please refer to the documentation for more detailed examples and explanations.
+Please refer to the [documentation](../../wiki) for more detailed examples and explanations.
 
 ## Donations
 If you find TronSharp useful and would like to support its development, you can make a donation to the following TRX wallet address:
