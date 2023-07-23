@@ -12,6 +12,19 @@ namespace TronSharp.Contract
         /// Calling transfer function of a contract
         /// </summary>
         /// <param name="contractAddress">Contract address</param>
+        /// <param name="ownerAccountPrivateKey">The owner's privatekey</param>
+        /// <param name="toAddress">The receipt wallet address</param>
+        /// <param name="amount">The amount to be transfered in decimals</param>
+        /// <param name="memo">(Optional) Put a message in the transaction</param>
+        /// <param name="contractDecimalPlaces">(Optional) If not entered will be get by calling contract</param>
+        /// <param name="feeLimit">(Optional) If not entered will be calculated</param>
+        /// <returns>TxId</returns>
+        Task<string> TransferAsync(string contractAddress, string ownerAccountAddress, string ownerAccountPrivateKey, string toAddress, decimal amount, string memo = null, long? contractDecimalPlaces = null, long? feeLimit = null, int energyPrice = 420);
+
+        /// <summary>
+        /// Calling transfer function of a contract
+        /// </summary>
+        /// <param name="contractAddress">Contract address</param>
         /// <param name="ownerAccount">The owner's TronAccount</param>
         /// <param name="toAddress">The receipt wallet address</param>
         /// <param name="amount">The amount to be transfered in decimals</param>

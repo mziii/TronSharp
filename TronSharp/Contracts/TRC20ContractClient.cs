@@ -69,6 +69,73 @@ namespace TronSharp.Contract
             return new FunctionCallDecoder().DecodeOutput<long>(result, new Parameter("uint8", "d"));
         }
 
+        public async Task<string> TransferAsync(string contractAddress, string ownerAccountAddress, string ownerAccountPrivateKey, string toAddress, decimal amount, string memo = null, long? contractDecimalPlaces = null, long? feeLimit = null, int energyPrice = 420)
+        {
+            var contractAddressBytes = Base58Encoder.DecodeFromBase58Check(contractAddress);
+            var tokenAmount = await ContractDecimalAmountToBigIntAsync(contractAddressBytes, amount, contractDecimalPlaces);
+            var callerAddressBytes = Base58Encoder.DecodeFromBase58Check(toAddress);
+            var ownerAddressBytes = Base58Encoder.DecodeFromBase58Check(ownerAccountAddress);
+            var wallet = _walletClient.GetProtocol();
+            var functionABI = ABITypedRegistry.GetFunctionABI<TransferFunction>();
+            try
+            {
+                var contract = await wallet.GetContractAsync(new BytesMessage
+                {
+                    Value = ByteString.CopyFrom(contractAddressBytes),
+                }, headers: _walletClient.GetHeaders());
+
+                var toAddressBytes = new byte[20];
+                Array.Copy(callerAddressBytes, 1, toAddressBytes, 0, toAddressBytes.Length);
+
+                var toAddressHex = "0x" + toAddressBytes.ToHex();
+
+                var trc20Transfer = new TransferFunction
+                {
+                    To = toAddressHex,
+                    TokenAmount = tokenAmount,
+                };
+
+                var encodedHex = new FunctionCallEncoder().EncodeRequest(trc20Transfer, functionABI.Sha3Signature);
+
+
+                var trigger = new TriggerSmartContract
+                {
+                    ContractAddress = ByteString.CopyFrom(contractAddressBytes),
+                    OwnerAddress = ByteString.CopyFrom(ownerAddressBytes),
+                    Data = ByteString.CopyFrom(encodedHex.HexToByteArray()),
+                };
+
+                var transactionExtention = await wallet.TriggerConstantContractAsync(trigger, headers: _walletClient.GetHeaders());
+
+                if (!transactionExtention.Result.Result)
+                {
+                    _logger.LogWarning($"[transfer]transfer failed, message={transactionExtention.Result.Message.ToStringUtf8()}.");
+                    return null;
+                }
+
+                var transaction = transactionExtention.Transaction;
+
+                if (transaction.Ret.Count > 0 && transaction.Ret[0].Ret == Transaction.Types.Result.Types.code.Failed)
+                {
+                    return null;
+                }
+
+                transaction.RawData.Data = ByteString.CopyFromUtf8(memo);
+                transaction.RawData.FeeLimit = feeLimit ?? await EstimateFeeLimitAsync(contractAddressBytes, ownerAddressBytes, toAddress, tokenAmount, energyPrice);
+
+                var transSign = _transactionClient.GetTransactionSign(transaction, ownerAccountPrivateKey);
+
+                var result = await _transactionClient.BroadcastTransactionAsync(transSign);
+
+                return transSign.GetTxid();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return null;
+            }
+        }
+
         public async Task<string> TransferAsync(string contractAddress, ITronAccount ownerAccount, string toAddress, decimal amount, string memo = null, long? contractDecimalPlaces = null, long? feeLimit = null, int energyPrice = 420)
         {
             var contractAddressBytes = Base58Encoder.DecodeFromBase58Check(contractAddress);
