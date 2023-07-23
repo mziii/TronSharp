@@ -51,3 +51,16 @@ Please refer to the documentation for more detailed examples and explanations.
 ## Donations
 If you find TronSharp useful and would like to support its development, you can make a donation to the following TRX wallet address:
 ### TNDTGoJ3dDvEmNHPCit9UUJVqFswaY7yvC
+
+Your contributions are greatly appreciated and will motivate us to continue improving TronSharp.
+
+## Contributing
+Contributions to TronSharp are welcomed and encouraged. If you encounter any issues, have suggestions, or want to add new features, feel free to open a GitHub issue or submit a pull request.
+
+Before submitting a pull request, make sure to read our Contribution Guidelines.
+
+## License
+TronSharp is released under the MIT License.
+
+## Acknowledgements
+We would like to express our gratitude to all the developers and contributors who made this library possible.
