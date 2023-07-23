@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf;
 using Microsoft.Extensions.Logging;
 using Nethereum.Util;
+using System.Numerics;
 using TronSharp.ABI;
 using TronSharp.ABI.FunctionEncoding;
 using TronSharp.ABI.Model;
@@ -47,16 +48,37 @@ namespace TronSharp.Contract
             return new FunctionCallDecoder().DecodeOutput<long>(result, new Parameter("uint8", "d"));
         }
 
-        public async Task<string> TransferAsync(string contractAddress, ITronAccount ownerAccount, string toAddress, decimal amount, string memo, long feeLimit)
+        private async Task<long> GetDecimalsAsync(Wallet.WalletClient wallet, byte[] contractAddressBytes)
+        {
+            var trc20Decimals = new DecimalsFunction();
+
+            var callEncoder = new FunctionCallEncoder();
+            var functionABI = ABITypedRegistry.GetFunctionABI<DecimalsFunction>();
+
+            var encodedHex = callEncoder.EncodeRequest(trc20Decimals, functionABI.Sha3Signature);
+
+            var trigger = new TriggerSmartContract
+            {
+                ContractAddress = ByteString.CopyFrom(contractAddressBytes),
+                Data = ByteString.CopyFrom(encodedHex.HexToByteArray()),
+            };
+
+            var txnExt = await wallet.TriggerConstantContractAsync(trigger, headers: _walletClient.GetHeaders());
+
+            var result = txnExt.ConstantResult[0].ToByteArray().ToHex();
+            return new FunctionCallDecoder().DecodeOutput<long>(result, new Parameter("uint8", "d"));
+        }
+
+        public async Task<string> TransferAsync(string contractAddress, ITronAccount ownerAccount, string toAddress, decimal amount, string memo = null, long? contractDecimalPlaces = null, long? feeLimit = null, int energyPrice = 420)
         {
             var contractAddressBytes = Base58Encoder.DecodeFromBase58Check(contractAddress);
+            var tokenAmount = await ContractDecimalAmountToBigIntAsync(contractAddressBytes, amount, contractDecimalPlaces);
             var callerAddressBytes = Base58Encoder.DecodeFromBase58Check(toAddress);
             var ownerAddressBytes = Base58Encoder.DecodeFromBase58Check(ownerAccount.Address);
             var wallet = _walletClient.GetProtocol();
             var functionABI = ABITypedRegistry.GetFunctionABI<TransferFunction>();
             try
             {
-
                 var contract = await wallet.GetContractAsync(new BytesMessage
                 {
                     Value = ByteString.CopyFrom(contractAddressBytes),
@@ -67,18 +89,10 @@ namespace TronSharp.Contract
 
                 var toAddressHex = "0x" + toAddressBytes.ToHex();
 
-                var decimals = GetDecimals(wallet, contractAddressBytes);
-
-                var tokenAmount = amount;
-                if (decimals > 0)
-                {
-                    tokenAmount = amount * Convert.ToDecimal(Math.Pow(10, decimals));
-                }
-
                 var trc20Transfer = new TransferFunction
                 {
                     To = toAddressHex,
-                    TokenAmount = Convert.ToInt64(tokenAmount),
+                    TokenAmount = tokenAmount,
                 };
 
                 var encodedHex = new FunctionCallEncoder().EncodeRequest(trc20Transfer, functionABI.Sha3Signature);
@@ -107,7 +121,7 @@ namespace TronSharp.Contract
                 }
 
                 transaction.RawData.Data = ByteString.CopyFromUtf8(memo);
-                transaction.RawData.FeeLimit = feeLimit;
+                transaction.RawData.FeeLimit = feeLimit ?? await EstimateFeeLimitAsync(contractAddressBytes, ownerAddressBytes, toAddress, tokenAmount, energyPrice);
 
                 var transSign = _transactionClient.GetTransactionSign(transaction, ownerAccount.PrivateKey);
 
@@ -268,15 +282,37 @@ namespace TronSharp.Contract
             }
         }
 
-        public async Task<long> EstimateEnergyRequiredAsync(string contractAddress, string ownerAddress, string toAddress, decimal amount, long decimalPlaces)
+        private async Task<long> EstimateFeeLimitAsync(byte[] contractAddressBytes, string contractAddress, string ownerAddress, string toAddress, decimal amount, int energyPrice = 420, long? contractDecimalPlaces = null)
         {
-            var tokenAmount = amount;
-            if (decimalPlaces > 0)
-                tokenAmount = amount * Convert.ToDecimal(Math.Pow(10, decimalPlaces));
+            var tokenAmount = await ContractDecimalAmountToBigIntAsync(contractAddressBytes, amount, contractDecimalPlaces);
+            var energyRequired = await EstimateEnergyRequiredAsync(contractAddress, ownerAddress, toAddress, tokenAmount);
+            return energyRequired * energyPrice;
+        }
+
+        private async Task<long> EstimateFeeLimitAsync(byte[] contractAddressBytes, byte[] ownerAddressBytes, string toAddress, BigInteger amount, int energyPrice = 420)
+        {
+            var energyRequired = await EstimateEnergyRequiredAsync(contractAddressBytes, ownerAddressBytes, toAddress, amount);
+            return energyRequired * energyPrice;
+        }
+
+        public async Task<long> EstimateFeeLimitAsync(string contractAddress, string ownerAddress, string toAddress, decimal amount, int energyPrice = 420, long? contractDecimalPlaces = null)
+        {
             var contractAddressBytes = Base58Encoder.DecodeFromBase58Check(contractAddress);
-            var callerAddressBytes = Base58Encoder.DecodeFromBase58Check(toAddress);
-            var ownerAddressBytes = Base58Encoder.DecodeFromBase58Check(ownerAddress);
+            var tokenAmount = await ContractDecimalAmountToBigIntAsync(contractAddressBytes, amount, contractDecimalPlaces);
+            var energyRequired = await EstimateEnergyRequiredAsync(contractAddress, ownerAddress, toAddress, tokenAmount);
+            return energyRequired * energyPrice;
+        }
+
+        public async Task<long> EstimateFeeLimitAsync(string contractAddress, string ownerAddress, string toAddress, BigInteger amount, int energyPrice = 420)
+        {
+            var energyRequired = await EstimateEnergyRequiredAsync(contractAddress, ownerAddress, toAddress, amount);
+            return energyRequired * energyPrice;
+        }
+
+        private async Task<long> EstimateEnergyRequiredAsync(byte[] contractAddressBytes, byte[] ownerAddressBytes, string toAddress, BigInteger amount)
+        {
             var protocol = _walletClient.GetProtocol();
+            var callerAddressBytes = Base58Encoder.DecodeFromBase58Check(toAddress);
             var functionABI = ABITypedRegistry.GetFunctionABI<TransferFunction>();
             var toAddressBytes = new byte[20];
             Array.Copy(callerAddressBytes, 1, toAddressBytes, 0, toAddressBytes.Length);
@@ -285,7 +321,64 @@ namespace TronSharp.Contract
             var trc20Transfer = new TransferFunction
             {
                 To = toAddressHex,
-                TokenAmount = new System.Numerics.BigInteger(tokenAmount),
+                TokenAmount = amount,
+            };
+            var encodedHex = new FunctionCallEncoder().EncodeRequest(trc20Transfer, functionABI.Sha3Signature);
+            var trigger = new TriggerSmartContract
+            {
+                ContractAddress = ByteString.CopyFrom(contractAddressBytes),
+                OwnerAddress = ByteString.CopyFrom(ownerAddressBytes),
+                Data = ByteString.CopyFrom(encodedHex.HexToByteArray()),
+            };
+
+            var estimateEnergyResult = await protocol.EstimateEnergyAsync(trigger, _walletClient.GetHeaders());
+            return estimateEnergyResult?.EnergyRequired ?? 0;
+        }
+
+        public async Task<long> EstimateEnergyRequiredAsync(string contractAddress, string ownerAddress, string toAddress, BigInteger amount)
+        {
+            var contractAddressBytes = Base58Encoder.DecodeFromBase58Check(contractAddress);
+            var protocol = _walletClient.GetProtocol();
+            var callerAddressBytes = Base58Encoder.DecodeFromBase58Check(toAddress);
+            var ownerAddressBytes = Base58Encoder.DecodeFromBase58Check(ownerAddress);
+            var functionABI = ABITypedRegistry.GetFunctionABI<TransferFunction>();
+            var toAddressBytes = new byte[20];
+            Array.Copy(callerAddressBytes, 1, toAddressBytes, 0, toAddressBytes.Length);
+
+            var toAddressHex = "0x" + toAddressBytes.ToHex();
+            var trc20Transfer = new TransferFunction
+            {
+                To = toAddressHex,
+                TokenAmount = amount,
+            };
+            var encodedHex = new FunctionCallEncoder().EncodeRequest(trc20Transfer, functionABI.Sha3Signature);
+            var trigger = new TriggerSmartContract
+            {
+                ContractAddress = ByteString.CopyFrom(contractAddressBytes),
+                OwnerAddress = ByteString.CopyFrom(ownerAddressBytes),
+                Data = ByteString.CopyFrom(encodedHex.HexToByteArray()),
+            };
+
+            var estimateEnergyResult = await protocol.EstimateEnergyAsync(trigger, _walletClient.GetHeaders());
+            return estimateEnergyResult?.EnergyRequired ?? 0;
+        }
+
+        public async Task<long> EstimateEnergyRequiredAsync(string contractAddress, string ownerAddress, string toAddress, decimal amount, long? contractDecimalPlaces = null)
+        {
+            var contractAddressBytes = Base58Encoder.DecodeFromBase58Check(contractAddress);
+            var protocol = _walletClient.GetProtocol();
+            var tokenAmount = await ContractDecimalAmountToBigIntAsync(contractAddressBytes, amount, contractDecimalPlaces);
+            var callerAddressBytes = Base58Encoder.DecodeFromBase58Check(toAddress);
+            var ownerAddressBytes = Base58Encoder.DecodeFromBase58Check(ownerAddress);
+            var functionABI = ABITypedRegistry.GetFunctionABI<TransferFunction>();
+            var toAddressBytes = new byte[20];
+            Array.Copy(callerAddressBytes, 1, toAddressBytes, 0, toAddressBytes.Length);
+
+            var toAddressHex = "0x" + toAddressBytes.ToHex();
+            var trc20Transfer = new TransferFunction
+            {
+                To = toAddressHex,
+                TokenAmount = tokenAmount,
             };
             var encodedHex = new FunctionCallEncoder().EncodeRequest(trc20Transfer, functionABI.Sha3Signature);
             var trigger = new TriggerSmartContract
@@ -300,35 +393,28 @@ namespace TronSharp.Contract
             return estimateEnergyResult?.EnergyRequired ?? 0;
         }
 
-        public async Task<TransactionExtention> CreateTokenTransferTransactionAsync(string contractAddress, string ownerAddress, string toAddress, decimal amount, long decimalPlaces, string memo = null)
+        public async Task<TransactionExtention> CreateTokenTransferTransactionAsync(string contractAddress, string ownerAddress, string toAddress, decimal amount, long? contractDecimalPlaces = null, string memo = null)
         {
             var contractAddressBytes = Base58Encoder.DecodeFromBase58Check(contractAddress);
             var callerAddressBytes = Base58Encoder.DecodeFromBase58Check(toAddress);
             var ownerAddressBytes = Base58Encoder.DecodeFromBase58Check(ownerAddress);
             var protocol = _walletClient.GetProtocol();
-            var functionABI = ABITypedRegistry.GetFunctionABI<TransferFunction>();
+            var transferFunctionAbi = ABITypedRegistry.GetFunctionABI<TransferFunction>();
             try
             {
-                //var contract = await protocol.GetContractAsync(new BytesMessage
-                //{
-                //    Value = ByteString.CopyFrom(contractAddressBytes),
-                //}, headers: new Grpc.Core.Metadata());
-
                 var toAddressBytes = new byte[20];
                 Array.Copy(callerAddressBytes, 1, toAddressBytes, 0, toAddressBytes.Length);
 
                 var toAddressHex = "0x" + toAddressBytes.ToHex();
-                var tokenAmount = amount;
-                if (decimalPlaces > 0)
-                    tokenAmount = amount * Convert.ToDecimal(Math.Pow(10, decimalPlaces));
+                var tokenAmount = await ContractDecimalAmountToBigIntAsync(contractAddressBytes, amount, contractDecimalPlaces);
 
                 var trc20Transfer = new TransferFunction
                 {
                     To = toAddressHex,
-                    TokenAmount = new System.Numerics.BigInteger(tokenAmount),
+                    TokenAmount = tokenAmount,
                 };
 
-                var encodedHex = new FunctionCallEncoder().EncodeRequest(trc20Transfer, functionABI.Sha3Signature);
+                var encodedHex = new FunctionCallEncoder().EncodeRequest(trc20Transfer, transferFunctionAbi.Sha3Signature);
 
                 var trigger = new TriggerSmartContract
                 {
@@ -345,10 +431,7 @@ namespace TronSharp.Contract
                 var transaction = transactionExtention.Transaction;
 
                 if (transaction.Ret.Count > 0 && transaction.Ret[0].Ret == Transaction.Types.Result.Types.code.Failed)
-                {
-                    Console.WriteLine(transaction.Ret[0].Ret);
                     return null;
-                }
 
                 return transactionExtention;
             }
@@ -356,6 +439,19 @@ namespace TronSharp.Contract
             {
                 return null;
             }
+        }
+
+        private async Task<BigInteger> ContractDecimalAmountToBigIntAsync(byte[] contractAddressBytes, decimal amount, long? contractDecimalPlaces)
+        {
+            var protocol = _walletClient.GetProtocol();
+            var tokenAmount = amount;
+            if (!contractDecimalPlaces.HasValue)
+                contractDecimalPlaces = await GetDecimalsAsync(protocol, contractAddressBytes);
+
+            if (contractDecimalPlaces.Value > 0)
+                tokenAmount = amount * Convert.ToDecimal(Math.Pow(10, contractDecimalPlaces.Value));
+
+            return new BigInteger(tokenAmount);
         }
     }
 }

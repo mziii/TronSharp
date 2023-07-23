@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Concurrent;
 using TronSharp.ABI.FunctionEncoding.Attributes;
 using TronSharp.ABI.Model;
 
@@ -11,8 +6,8 @@ namespace TronSharp.ABI
 {
     public static class ABITypedRegistry
     {
-        private static ConcurrentDictionary<Type, FunctionABI> _functionAbiRegistry = new ConcurrentDictionary<Type, FunctionABI>();
-        private static AttributesToABIExtractor _abiExtractor = new AttributesToABIExtractor();
+        private static ConcurrentDictionary<Type, FunctionABI> _functionAbiRegistry = new();
+        private static AttributesToABIExtractor _abiExtractor = new();
 
         public static FunctionABI GetFunctionABI<TFunctionMessage>()
         {

@@ -1,4 +1,5 @@
-﻿using TronSharp.Accounts;
+﻿using System.Numerics;
+using TronSharp.Accounts;
 using TronSharp.Protocol;
 
 namespace TronSharp.Contract
@@ -7,14 +8,99 @@ namespace TronSharp.Contract
     {
         ContractProtocol Protocol { get; }
 
-        Task<string> TransferAsync(string contractAddress, ITronAccount ownerAccount, string toAddress, decimal amount, string memo, long feeLimit);
+        /// <summary>
+        /// Calling transfer function of a contract
+        /// </summary>
+        /// <param name="contractAddress">Contract address</param>
+        /// <param name="ownerAccount">The owner's TronAccount</param>
+        /// <param name="toAddress">The receipt wallet address</param>
+        /// <param name="amount">The amount to be transfered in decimals</param>
+        /// <param name="memo">(Optional) Put a message in the transaction</param>
+        /// <param name="contractDecimalPlaces">(Optional) If not entered will be get by calling contract</param>
+        /// <param name="feeLimit">(Optional) If not entered will be calculated</param>
+        /// <returns>TxId</returns>
+        Task<string> TransferAsync(string contractAddress, ITronAccount ownerAccount, string toAddress, decimal amount, string memo = null, long? contractDecimalPlaces = null, long? feeLimit = null, int energyPrice = 420);
 
+        /// <summary>
+        /// Calling balanceOf function (Decimal places of contract will be get by calling contract)
+        /// </summary>
+        /// <param name="contractAddress">Contract address</param>
+        /// <param name="ownerAddress">The owner's wallet address</param>
+        /// <returns>The balance of the contract for owner's wallet address in decimal</returns>
         Task<decimal> BalanceOfAsync(string contractAddress, string ownerAddress);
-        Task<decimal> BalanceOfAsync(string contractAddress, string ownerAddress, long decimalPlaces);
+
+        /// <summary>
+        /// Calling balanceOf function (Decimal places of contract will be get by calling contract)
+        /// </summary>
+        /// <param name="contractAddress">Contract address</param>
+        /// <param name="ownerAddress">The owner's wallet address</param>
+        /// <param name="contractDecimalPlaces">Decimal places of contract</param>
+        /// <returns>The balance of the contract for owner's wallet address in decimal</returns>
+        Task<decimal> BalanceOfAsync(string contractAddress, string ownerAddress, long contractDecimalPlaces);
+
+        /// <summary>
+        /// Calling balanceOf function (Decimal places of contract will be get by calling contract)
+        /// </summary>
+        /// <param name="contractAddress">Contract address</param>
+        /// <param name="ownerAccount">The owner's TronAccount</param>
+        /// <returns>The balance of the contract for owner's wallet in decimal</returns>
         Task<decimal> BalanceOfAsync(string contractAddress, ITronAccount ownerAccount);
 
-        Task<long> EstimateEnergyRequiredAsync(string contractAddress, string ownerAddress, string toAddress, decimal amount, long decimalPlaces);
+        /// <summary>
+        /// Calling estimate energy required
+        /// </summary>
+        /// <param name="contractAddress">Contract address</param>
+        /// <param name="ownerAddress">The owner's wallet address</param>
+        /// <param name="toAddress">The receipt wallet address</param>
+        /// <param name="amount">The amount to be transfered in decimal</param>
+        /// <param name="contractDecimalPlaces">(Optional) If not entered will be get by calling contract</param>
+        /// <returns></returns>
+        Task<long> EstimateEnergyRequiredAsync(string contractAddress, string ownerAddress, string toAddress, decimal amount, long? contractDecimalPlaces = null);
 
-        Task<TransactionExtention> CreateTokenTransferTransactionAsync(string contractAddress, string ownerAddress, string toAddress, decimal amount, long decimalPlaces, string memo = null);
+        /// <summary>
+        /// Calling estimate energy required
+        /// </summary>
+        /// <param name="contractAddress">Contract address</param>
+        /// <param name="ownerAddress">The owner's wallet address</param>
+        /// <param name="toAddress">The receipt wallet address</param>
+        /// <param name="amount">The amount to be transfered in BigInteger</param>
+        /// <param name="contractDecimalPlaces">(Optional) If not entered will be get by calling contract</param>
+        /// <returns></returns>
+        Task<long> EstimateEnergyRequiredAsync(string contractAddress, string ownerAddress, string toAddress, BigInteger amount);
+
+        /// <summary>
+        /// Create token transfer transaction without broadcasting to the network
+        /// </summary>
+        /// <param name="contractAddress">Contract address</param>
+        /// <param name="ownerAddress">The owner's wallet address</param>
+        /// <param name="toAddress">The receipt wallet address</param>
+        /// <param name="amount">The amount to be transfered in decimal</param>
+        /// <param name="contractDecimalPlaces">(Optional) If not entered will be get by calling contract</param>
+        /// <param name="memo">(Optional) Put a message in the transaction</param>
+        /// <returns>TransactionExtension object</returns>
+        Task<TransactionExtention> CreateTokenTransferTransactionAsync(string contractAddress, string ownerAddress, string toAddress, decimal amount, long? contractDecimalPlaces = null, string memo = null);
+
+        /// <summary>
+        /// Estimate fee limit by using wallet/estimateenergy and multiply by energyprice in SUN
+        /// </summary>
+        /// <param name="contractAddress">Contract address</param>
+        /// <param name="ownerAddress">The owner's wallet address</param>
+        /// <param name="toAddress">The receipt wallet address</param>
+        /// <param name="amount">The amount to be transfered in decimal</param>
+        /// <param name="energyPrice">Currently it's 420 sun by default</param>
+        /// <returns>FeeLimit in SUN amount 1,000,000 SUN = 1 TRX</returns>
+        Task<long> EstimateFeeLimitAsync(string contractAddress, string ownerAddress, string toAddress, BigInteger amount, int energyPrice = 420);
+
+        /// <summary>
+        /// Estimate fee limit by using wallet/estimateenergy and multiply by energyprice in SUN
+        /// </summary>
+        /// <param name="contractAddress">Contract address</param>
+        /// <param name="ownerAddress">The owner's wallet address</param>
+        /// <param name="toAddress">The receipt wallet address</param>
+        /// <param name="amount">The amount to be transfered in BigInteger</param>
+        /// <param name="energyPrice">Currently it's 420 sun by default</param>
+        /// <param name="contractDecimalPlaces">(Optional) If not entered will be get by calling contract</param>
+        /// <returns>FeeLimit in SUN amount 1,000,000 SUN = 1 TRX</returns>
+        Task<long> EstimateFeeLimitAsync(string contractAddress, string ownerAddress, string toAddress, decimal amount, int energyPrice = 420, long? contractDecimalPlaces = null);
     }
 }
