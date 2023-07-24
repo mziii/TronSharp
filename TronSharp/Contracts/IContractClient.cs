@@ -7,7 +7,7 @@ namespace TronSharp.Contract
     public interface IContractClient
     {
         ContractProtocol Protocol { get; }
-
+        Task<ContractState> GetContractStateAsync(string contractAddress);
         /// <summary>
         /// Calling transfer function of a contract
         /// </summary>
@@ -92,6 +92,8 @@ namespace TronSharp.Contract
         /// <param name="memo">(Optional) Put a message in the transaction</param>
         /// <returns>TransactionExtension object</returns>
         Task<TransactionExtention> CreateTokenTransferTransactionAsync(string contractAddress, string ownerAddress, string toAddress, decimal amount, long? contractDecimalPlaces = null, string memo = null);
+        Task<TransactionExtention> CreateTokenTransferTransactionAsync(string contractAddress, string ownerAddress, string toAddress, BigInteger amount, string memo = null);
+        Task<long> EstimateFeeLimitByEnergyFactorAsync(string contractAddress, string ownerAddress, string toAddress, BigInteger amount, int energyPrice = 420, string memo = null);
 
         /// <summary>
         /// Estimate fee limit by using wallet/estimateenergy and multiply by energyprice in SUN
@@ -115,5 +117,9 @@ namespace TronSharp.Contract
         /// <param name="contractDecimalPlaces">(Optional) If not entered will be get by calling contract</param>
         /// <returns>FeeLimit in SUN amount 1,000,000 SUN = 1 TRX</returns>
         Task<long> EstimateFeeLimitAsync(string contractAddress, string ownerAddress, string toAddress, decimal amount, int energyPrice = 420, long? contractDecimalPlaces = null);
+
+        Task<long> GetDecimalsAsync(Wallet.WalletClient walletProtocol, string contractAddress);
+        Task<long> GetDecimalsAsync(Wallet.WalletClient walletProtocol, byte[] contractAddressBytes);
+        //Task<long> EstimateFeeLimitByMaxFactorAsync(string contractAddress, string ownerAddress, string toAddress, BigInteger amount, string memo = null);
     }
 }

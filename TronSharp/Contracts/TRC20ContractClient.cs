@@ -26,6 +26,17 @@ namespace TronSharp.Contract
             _transactionClient = transactionClient;
         }
 
+        public async Task<ContractState> GetContractStateAsync(string contractAddress)
+        {
+            var contractAddressBytes = Base58Encoder.DecodeFromBase58Check(contractAddress);
+            BytesMessage bytesMessage = new()
+            {
+                Value = ByteString.CopyFrom(contractAddressBytes)
+            };
+            var contractInfo = await _walletClient.GetProtocol().GetContractInfoAsync(bytesMessage, _walletClient.GetHeaders());
+            return contractInfo.ContractState;
+        }
+
         private long GetDecimals(Wallet.WalletClient wallet, byte[] contractAddressBytes)
         {
             var trc20Decimals = new DecimalsFunction();
@@ -48,7 +59,13 @@ namespace TronSharp.Contract
             return new FunctionCallDecoder().DecodeOutput<long>(result, new Parameter("uint8", "d"));
         }
 
-        private async Task<long> GetDecimalsAsync(Wallet.WalletClient wallet, byte[] contractAddressBytes)
+        public async Task<long> GetDecimalsAsync(Wallet.WalletClient walletProtocol, string contractAddress)
+        {
+            var contractAddressBytes = Base58Encoder.DecodeFromBase58Check(contractAddress);
+            return await GetDecimalsAsync(walletProtocol, contractAddressBytes);
+        }
+
+        public async Task<long> GetDecimalsAsync(Wallet.WalletClient walletProtocol, byte[] contractAddressBytes)
         {
             var trc20Decimals = new DecimalsFunction();
 
@@ -63,7 +80,7 @@ namespace TronSharp.Contract
                 Data = ByteString.CopyFrom(encodedHex.HexToByteArray()),
             };
 
-            var txnExt = await wallet.TriggerConstantContractAsync(trigger, headers: _walletClient.GetHeaders());
+            var txnExt = await walletProtocol.TriggerConstantContractAsync(trigger, headers: _walletClient.GetHeaders());
 
             var result = txnExt.ConstantResult[0].ToByteArray().ToHex();
             return new FunctionCallDecoder().DecodeOutput<long>(result, new Parameter("uint8", "d"));
@@ -463,6 +480,14 @@ namespace TronSharp.Contract
         public async Task<TransactionExtention> CreateTokenTransferTransactionAsync(string contractAddress, string ownerAddress, string toAddress, decimal amount, long? contractDecimalPlaces = null, string memo = null)
         {
             var contractAddressBytes = Base58Encoder.DecodeFromBase58Check(contractAddress);
+            var tokenAmount = await ContractDecimalAmountToBigIntAsync(contractAddressBytes, amount, contractDecimalPlaces);
+
+            return await CreateTokenTransferTransactionAsync(contractAddress, ownerAddress, toAddress, tokenAmount, memo);
+        }
+
+        public async Task<TransactionExtention> CreateTokenTransferTransactionAsync(string contractAddress, string ownerAddress, string toAddress, BigInteger amount, string memo = null)
+        {
+            var contractAddressBytes = Base58Encoder.DecodeFromBase58Check(contractAddress);
             var callerAddressBytes = Base58Encoder.DecodeFromBase58Check(toAddress);
             var ownerAddressBytes = Base58Encoder.DecodeFromBase58Check(ownerAddress);
             var protocol = _walletClient.GetProtocol();
@@ -473,12 +498,11 @@ namespace TronSharp.Contract
                 Array.Copy(callerAddressBytes, 1, toAddressBytes, 0, toAddressBytes.Length);
 
                 var toAddressHex = "0x" + toAddressBytes.ToHex();
-                var tokenAmount = await ContractDecimalAmountToBigIntAsync(contractAddressBytes, amount, contractDecimalPlaces);
 
                 var trc20Transfer = new TransferFunction
                 {
                     To = toAddressHex,
-                    TokenAmount = tokenAmount,
+                    TokenAmount = amount,
                 };
 
                 var encodedHex = new FunctionCallEncoder().EncodeRequest(trc20Transfer, transferFunctionAbi.Sha3Signature);
@@ -520,5 +544,21 @@ namespace TronSharp.Contract
 
             return new BigInteger(tokenAmount);
         }
+
+        public async Task<long> EstimateFeeLimitByEnergyFactorAsync(string contractAddress, string ownerAddress, string toAddress, BigInteger amount, int energyPrice = 420, string memo = null)
+        {
+            var transactionExtension = await CreateTokenTransferTransactionAsync(contractAddress, ownerAddress, toAddress, amount, memo);
+            var contractState = await GetContractStateAsync(contractAddress);
+            // basic energy consumption = transactionExtension.EnergyUsed - transactionExtension.EnergyPenalty;
+            if (contractState != null)
+                return (transactionExtension.EnergyUsed - transactionExtension.EnergyPenalty) * (1 + contractState.EnergyFactor) * energyPrice / 10000;
+
+            return 0;
+        }
+
+        //public Task<long> EstimateFeeLimitByMaxFactorAsync(string contractAddress, string ownerAddress, string toAddress, BigInteger amount, string memo = null)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

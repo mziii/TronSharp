@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TronSharp", "TronSharp\Tron
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TronSharp.ABI", "TronSharp.ABI\TronSharp.ABI.csproj", "{4EBEE6E7-55C1-434F-B00F-FEE95BB1BC06}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TronSharp.Test", "TronSharp.Test\TronSharp.Test.csproj", "{F75CC107-5397-4A1F-BCF1-C161535A40CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{4EBEE6E7-55C1-434F-B00F-FEE95BB1BC06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4EBEE6E7-55C1-434F-B00F-FEE95BB1BC06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4EBEE6E7-55C1-434F-B00F-FEE95BB1BC06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F75CC107-5397-4A1F-BCF1-C161535A40CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F75CC107-5397-4A1F-BCF1-C161535A40CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F75CC107-5397-4A1F-BCF1-C161535A40CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F75CC107-5397-4A1F-BCF1-C161535A40CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
