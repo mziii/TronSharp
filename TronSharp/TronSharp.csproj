@@ -16,7 +16,7 @@
 		<PackageTags>TronSharp;Tron network dot net;Tron network c#;Tron csharp;</PackageTags>
 		<PackageOutputPath>$(MSBuildProjectDirectory)/../build-nuget</PackageOutputPath>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<VersionPrefix>1.0.6</VersionPrefix>
+		<VersionPrefix>1.0.8</VersionPrefix>
 		<PackageId>TronSharp_issues_3</PackageId>
 	</PropertyGroup>
 
