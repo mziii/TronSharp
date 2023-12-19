@@ -7,39 +7,31 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Title>TronSharp</Title>
 		<Authors>mziii</Authors>
-		<Description>TronSharp is a library to interact with tron network in dot net projects. I've recreated this project based on TronNet library from stoway Check here: https://github.com/stoway/TronNet</Description>
+		<Description>TronSharp is a library to interact with tron network in dot net projects. I've
+			recreated this project based on TronNet library from stoway Check here:
+			https://github.com/stoway/TronNet</Description>
 		<PackageProjectUrl>https://github.com/mziii/TronSharp</PackageProjectUrl>
-		<PackageIcon>tronsharp.png</PackageIcon>
 		<RepositoryUrl>https://github.com/mziii/TronSharp</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>TronSharp;Tron network dot net;Tron network c#;Tron csharp;</PackageTags>
-		<PackageOutputPath>c:\TronSharpNuget\</PackageOutputPath>
-		<PackageLicenseFile>LICENSE.TXT</PackageLicenseFile>
+		<PackageOutputPath>$(MSBuildProjectDirectory)/../build-nuget</PackageOutputPath>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<VersionPrefix>1.0.5</VersionPrefix>
+		<VersionPrefix>1.0.6</VersionPrefix>
+		<PackageId>TronSharp_issues_3</PackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Include="C:\Users\ansar\Downloads\LICENSE.TXT">
-			<Pack>True</Pack>
+		<None Include="..\README.md" Link="README.md">
 			<PackagePath>\</PackagePath>
-		</None>
-		<None Include="C:\Users\ansar\Downloads\README.md">
 			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
-		</None>
-		<None Include="C:\Users\ansar\OneDrive\Pictures\tronsharp.png">
-			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="HDWallet.Tron" Version="0.7.0" />
-		<PackageReference Include="Portable.BouncyCastle" Version="1.8.10" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Nethereum.Web3" Version="4.18.0" />
 		<ProjectReference Include="..\TronSharp.ABI\TronSharp.ABI.csproj" />
 		<ProjectReference Include="..\TronSharp.Protocol\TronSharp.Protocol.csproj" />
 	</ItemGroup>

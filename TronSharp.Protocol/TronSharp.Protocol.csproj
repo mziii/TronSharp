@@ -7,16 +7,16 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Title>TronSharp.Protocol</Title>
 		<Authors>mziii</Authors>
-		<Description>TronSharp.Protocol is a sub library for TronSharp check https://www.nuget.org/packages/TronSharp</Description>
+		<Description>TronSharp.Protocol is a sub library for TronSharp check
+			https://www.nuget.org/packages/TronSharp</Description>
 		<PackageProjectUrl>https://github.com/mziii/TronSharp/tree/master/TronSharp.Protocol</PackageProjectUrl>
-		<PackageIcon>tronsharp.png</PackageIcon>
 		<RepositoryUrl>https://github.com/mziii/TronSharp</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>TronSharp;Tron network dot net;Tron network c#;Tron csharp;</PackageTags>
-		<PackageOutputPath>c:\TronSharpNuget\</PackageOutputPath>
-		<PackageLicenseFile>LICENSE.TXT</PackageLicenseFile>
+		<PackageOutputPath>$(MSBuildProjectDirectory)/../build-nuget</PackageOutputPath>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<VersionPrefix>1.0.1</VersionPrefix>
+		<PackageId>TronSharp.Protocol_issues_3</PackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -55,17 +55,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Include="C:\Users\ansar\Downloads\LICENSE.TXT" Link="LICENSE.TXT">
-	    <PackagePath>\</PackagePath>
-	    <Pack>True</Pack>
-	  </None>
-	  <None Include="C:\Users\ansar\Downloads\README.md" Link="README.md">
-	    <PackagePath>\</PackagePath>
-	    <Pack>True</Pack>
-	  </None>
-	  <None Include="C:\Users\ansar\OneDrive\Pictures\tronsharp.png" Link="tronsharp.png">
-	    <PackagePath>\</PackagePath>
-	    <Pack>True</Pack>
-	  </None>
+		<None Include="..\README.md" Link="README.md">
+			<PackagePath>\</PackagePath>
+			<Pack>True</Pack>
+		</None>
 	</ItemGroup>
 </Project>
