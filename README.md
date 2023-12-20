@@ -1,3 +1,5 @@
+# Fixed https://github.com/mziii/TronSharp/issues/3
+
 # TronSharp: C# Library for Interacting with Tron Network
 TronSharp is a powerful C# library that facilitates seamless interaction with the Tron network (TRX), its protocol, wallet, and smart contracts. Whether you are building decentralized applications (DApps) or integrating Tron functionalities into your existing projects, TronSharp simplifies the process, enabling you to focus on your application logic.
 
