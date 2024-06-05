@@ -7,38 +7,30 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Title>TronSharp.Crypto</Title>
 		<Authors>mziii</Authors>
-		<Description>TronSharp.Crypto is a sub library for TronSharp check https://www.nuget.org/packages/TronSharp</Description>
+		<Description>TronSharp.Crypto is a sub library for TronSharp check
+			https://www.nuget.org/packages/TronSharp</Description>
 		<PackageProjectUrl>https://github.com/mziii/TronSharp/tree/master/TronSharp.Crypto</PackageProjectUrl>
-		<PackageIcon>tronsharp.png</PackageIcon>
 		<RepositoryUrl>https://github.com/mziii/TronSharp</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
 		<PackageTags>TronSharp;Tron network dot net;Tron network c#;Tron csharp;</PackageTags>
-		<PackageOutputPath>c:\TronSharpNuget\</PackageOutputPath>
-		<PackageLicenseFile>LICENSE.TXT</PackageLicenseFile>
+		<PackageOutputPath>$(MSBuildProjectDirectory)/../build-nuget</PackageOutputPath>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<VersionPrefix>1.0.1</VersionPrefix>
+		<VersionPrefix>1.0.8</VersionPrefix>
+		<PackageId>TronSharp.Crypto_issues_3</PackageId>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<Optimize>true</Optimize>
 	</PropertyGroup>
 	<ItemGroup>
-	  <None Include="C:\Users\ansar\Downloads\LICENSE.TXT" Link="LICENSE.TXT">
-	    <PackagePath>\</PackagePath>
-	    <Pack>True</Pack>
-	  </None>
-	  <None Include="C:\Users\ansar\Downloads\README.md" Link="README.md">
-	    <PackagePath>\</PackagePath>
-	    <Pack>True</Pack>
-	  </None>
-	  <None Include="C:\Users\ansar\OneDrive\Pictures\tronsharp.png" Link="tronsharp.png">
-	    <PackagePath>\</PackagePath>
-	    <Pack>True</Pack>
-	  </None>
+		<None Include="..\README.md" Link="README.md">
+			<PackagePath>\</PackagePath>
+			<Pack>True</Pack>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Portable.BouncyCastle" Version="1.8.10" />
+		<PackageReference Include="BouncyCastle.Cryptography" Version="2.0.0" />
 		<PackageReference Include="Google.Api.CommonProtos" Version="2.10.0" />
 		<PackageReference Include="Google.Protobuf" Version="3.23.4" />
 		<PackageReference Include="Google.Protobuf.Tools" Version="3.23.4" />
