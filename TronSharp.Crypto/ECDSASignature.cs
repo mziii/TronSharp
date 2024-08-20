@@ -23,7 +23,7 @@ namespace TronSharp.Crypto
         {
             try
             {
-                var decoder = new Asn1InputStream(derSig);
+                using var decoder = new Asn1InputStream(derSig);
                 if (decoder.ReadObject() is not DerSequence seq || seq.Count != 2)
                     throw new FormatException(InvalidDERSignature);
                 R = ((DerInteger)seq[0]).Value;
@@ -65,9 +65,6 @@ namespace TronSharp.Crypto
             }
         }
 
-        /// <summary>
-        ///     Enforce LowS on the signature
-        /// </summary>
         public ECDSASignature MakeCanonical()
         {
             if (!IsLowS)
@@ -75,20 +72,13 @@ namespace TronSharp.Crypto
             return this;
         }
 
-        /**
-        * What we get back from the signer are the two components of a signature, r and s. To get a flat byte stream
-        * of the type used by Bitcoin we have to encode them using DER encoding, which is just a way to pack the two
-        * components into a structure.
-        */
-
         public byte[] ToDER()
         {
-            // Usually 70-72 bytes.
-            var bos = new MemoryStream(72);
+            using var bos = new MemoryStream(72);
             var seq = new DerSequenceGenerator(bos);
             seq.AddObject(new DerInteger(R));
             seq.AddObject(new DerInteger(S));
-            seq.Close();
+            seq.Dispose(); // Explicitly dispose of the sequence generator.
             return bos.ToArray();
         }
 
@@ -96,6 +86,7 @@ namespace TronSharp.Crypto
         {
             return ByteArrary.Merge(BigIntegerToBytes(R, 32), BigIntegerToBytes(S, 32), this.V);
         }
+
         private static byte[] BigIntegerToBytes(BigInteger b, int numBytes)
         {
             if (b == null) return null;
@@ -108,5 +99,4 @@ namespace TronSharp.Crypto
             return bytes;
         }
     }
-
 }
