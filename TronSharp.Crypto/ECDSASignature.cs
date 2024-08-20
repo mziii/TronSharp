@@ -79,7 +79,6 @@ namespace TronSharp.Crypto
             using var seq = new DerSequenceGenerator(bos);
             seq.AddObject(new DerInteger(R));
             seq.AddObject(new DerInteger(S));
-            seq.Close();
             return bos.ToArray();
         }
 
