@@ -74,11 +74,12 @@ namespace TronSharp.Crypto
 
         public byte[] ToDER()
         {
+            // Usually 70-72 bytes.
             using var bos = new MemoryStream(72);
-            var seq = new DerSequenceGenerator(bos);
+            using var seq = new DerSequenceGenerator(bos);
             seq.AddObject(new DerInteger(R));
             seq.AddObject(new DerInteger(S));
-            seq.Dispose(); // Explicitly dispose of the sequence generator.
+            seq.Close();
             return bos.ToArray();
         }
 
